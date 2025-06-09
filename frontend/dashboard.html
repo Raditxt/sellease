@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - SellEase POS</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .stat-card {
+            transition: transform 0.2s ease-in-out;
+        }
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="min-h-screen flex flex-col">
+        <!-- Header -->
+        <header class="bg-blue-600 text-white p-4 shadow-md">
+            <div class="container mx-auto flex justify-between items-center">
+                <h1 class="text-2xl font-bold">SellEase POS</h1>
+                <nav>
+                    <ul class="flex space-x-6">
+                        <li><a href="dashboard.html" class="font-semibold hover:text-blue-200 transition"><i class="fas fa-tachometer-alt mr-1"></i> Dashboard</a></li>
+                        <li><a href="pos.html" class="hover:text-blue-200 transition"><i class="fas fa-cash-register mr-1"></i> POS</a></li>
+                        <li><a href="reports.html" class="hover:text-blue-200 transition"><i class="fas fa-chart-bar mr-1"></i> Reports</a></li>
+                        <li><a href="login.html" class="hover:text-blue-200 transition"><i class="fas fa-sign-out-alt mr-1"></i> Logout</a></li>
+                    </ul>
+                </nav>
+            </div>
+        </header>
+
+        <!-- Main Content -->
+        <main class="flex-grow container mx-auto p-4">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">Dashboard Overview</h2>
+            
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                <!-- Total Sales Card -->
+                <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Total Sales</p>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-1">$12,345</h3>
+                            <p class="text-sm text-green-500 mt-2"><i class="fas fa-arrow-up mr-1"></i> 12% from last month</p>
+                        </div>
+                        <div class="bg-blue-100 p-3 rounded-full">
+                            <i class="fas fa-dollar-sign text-blue-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stock Card -->
+                <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-green-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Stock Items</p>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-1">1,234</h3>
+                            <p class="text-sm text-red-500 mt-2"><i class="fas fa-arrow-down mr-1"></i> 5 items low stock</p>
+                        </div>
+                        <div class="bg-green-100 p-3 rounded-full">
+                            <i class="fas fa-boxes text-green-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Customers Card -->
+                <div class="stat-card bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-500">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <p class="text-sm font-medium text-gray-500">Customers</p>
+                            <h3 class="text-3xl font-bold text-gray-800 mt-1">567</h3>
+                            <p class="text-sm text-green-500 mt-2"><i class="fas fa-arrow-up mr-1"></i> 8 new this week</p>
+                        </div>
+                        <div class="bg-purple-100 p-3 rounded-full">
+                            <i class="fas fa-users text-purple-600 text-xl"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sales Chart -->
+            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
+                <div class="flex justify-between items-center mb-4">
+                    <h3 class="text-lg font-semibold text-gray-800">Sales Trend (Last 30 Days)</h3>
+                    <select class="border border-gray-300 rounded-md px-3 py-1 text-sm">
+                        <option>Last 30 Days</option>
+                        <option>Last 60 Days</option>
+                        <option>This Year</option>
+                    </select>
+                </div>
+                <div class="h-80">
+                    <canvas id="salesChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Recent Transactions -->
+            <div class="bg-white rounded-lg shadow-md p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-4">Recent Transactions</h3>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">ID</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Customer</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Amount</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white divide-y divide-gray-200">
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#1001</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-15</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">John Doe</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$125.00</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#1000</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-14</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Jane Smith</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$89.50</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">Completed</span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">#999</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">2023-06-13</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">Mike Johnson</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">$215.75</td>
+                                <td class="px-6 py-4 whitespace-nowrap">
+                                    <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-yellow-100 text-yellow-800">Pending</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="bg-gray-800 text-white p-4 text-center text-sm">
+            <p>&copy; 2023 SellEase POS System. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script>
+        // Sales Chart
+        const salesCtx = document.getElementById('salesChart').getContext('2d');
+        const salesChart = new Chart(salesCtx, {
+            type: 'line',
+            data: {
+                labels: Array.from({length: 30}, (_, i) => `Day ${i+1}`),
+                datasets: [{
+                    label: 'Sales ($)',
+                    data: Array.from({length: 30}, () => Math.floor(Math.random() * 1000) + 200),
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    tension: 0.3,
+                    fill: true,
+                    borderWidth: 2
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                    },
+                    tooltip: {
+                        mode: 'index',
+                        intersect: false,
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        ticks: {
+                            callback: function(value) {
+                                return '$' + value;
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        // Animate stat numbers
+        function animateValue(id, start, end, duration) {
+            const obj = document.getElementById(id);
+            let startTimestamp = null;
+            const step = (timestamp) => {
+                if (!startTimestamp) startTimestamp = timestamp;
+                const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                obj.innerHTML = Math.floor(progress * (end - start) + start).toLocaleString();
+                if (progress < 1) {
+                    window.requestAnimationFrame(step);
+                }
+            };
+            window.requestAnimationFrame(step);
+        }
+
+        // Animate stats on page load
+        window.addEventListener('load', () => {
+            animateValue('totalSales', 0, 12345, 1500);
+            animateValue('stockItems', 0, 1234, 1500);
+            animateValue('customers', 0, 567, 1500);
+        });
+    </script>
+</body>
+</html>

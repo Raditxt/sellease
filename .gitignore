@@ -1,2 +1,4 @@
 # Ignore environment variables file
 .env
+hash_password.py
+__pycache__

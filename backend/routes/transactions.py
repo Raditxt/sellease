@@ -3,6 +3,7 @@
 from flask import Blueprint, request, jsonify
 from db import get_db_connection
 from datetime import datetime
+from utils.logger import log_activity
 
 transactions_bp = Blueprint('transactions', __name__)
 
@@ -48,6 +49,7 @@ def create_transaction():
             """, (quantity, product_id))
 
         conn.commit()
+        log_activity(user_id, f"Melakukan transaksi ID {transaction_id} dengan total {total}")
         return jsonify({'message': 'Transaksi berhasil disimpan'}), 201
 
     except Exception as e:

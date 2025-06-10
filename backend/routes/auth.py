@@ -3,6 +3,7 @@
 from flask import Blueprint, request, jsonify
 from db import get_db_connection
 from utils.security import verify_password
+from utils.logger import log_activity
 
 auth_bp = Blueprint('auth', __name__)
 
@@ -24,6 +25,7 @@ def login():
 
     if user and verify_password(password, user['password_hash']):
         # Sukses login
+        log_activity(user['id'], f"login sebagai {user['role']}")
         return jsonify({
             'message': 'Login successful',
             'user': {

@@ -56,10 +56,24 @@ def sales_report():
         """, (start_date, end_date))
         top_products = cursor.fetchall()
 
+                # Tambahan di dalam try sebelum return
+        cursor.execute("""
+            SELECT 
+                payment_method,
+                COUNT(*) AS total_transactions,
+                SUM(total_amount) AS total_sales
+            FROM transactions
+            WHERE DATE(created_at) BETWEEN %s AND %s
+            GROUP BY payment_method
+        """, (start_date, end_date))
+        payment_summary = cursor.fetchall()
+
+
         return jsonify({
             'summary': summary,
             'monthly_sales': monthly_sales,
-            'top_products': top_products
+            'top_products': top_products,
+            'payment_breakdown': payment_summary
         })
 
     except Exception as e:

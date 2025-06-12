@@ -33,7 +33,10 @@ def add_customer():
             VALUES (%s, %s, %s)
         """, (name, phone, email))
         conn.commit()
-        return jsonify({'message': 'Pelanggan berhasil ditambahkan'}), 201
+        return jsonify({
+            'message': 'Pelanggan berhasil ditambahkan',
+            'id': cursor.lastrowid  # ✅ penting untuk frontend
+        }), 201
     except Exception as e:
         conn.rollback()
         return jsonify({'error': str(e)}), 500

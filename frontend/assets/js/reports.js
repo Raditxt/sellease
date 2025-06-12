@@ -121,6 +121,30 @@ function updateSalesChart(data) {
     });
 }
 
+const user = JSON.parse(localStorage.getItem("user"));
+if (!user) location.href = "login.html";
+
+// Proteksi per halaman
+const isAdmin = user.role === 'admin';
+
+if (location.pathname.includes("dashboard") && !isAdmin) {
+    alert("Hanya admin yang boleh mengakses dashboard.");
+    location.href = "pos.html";
+}
+
+if (location.pathname.includes("reports") && !isAdmin) {
+    alert("Hanya admin yang boleh mengakses laporan.");
+    location.href = "pos.html";
+}
+
+// Ubah navbar secara dinamis
+document.addEventListener("DOMContentLoaded", () => {
+    if (!isAdmin) {
+        document.querySelector('a[href="dashboard.html"]')?.remove();
+        document.querySelector('a[href="reports.html"]')?.remove();
+    }
+});
+
 // Load default saat buka halaman
 window.addEventListener('load', generateReport);
 

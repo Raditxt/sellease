@@ -1,25 +1,33 @@
+// dashboard.js
+const user = JSON.parse(localStorage.getItem('user'));
+if (!user) window.location.href = 'login.html';
+
+document.getElementById("userDisplay").innerText = `${user.username} (${user.role})`;
+
 async function fetchSummary() {
     try {
         const res = await fetch("http://localhost:5000/api/dashboard/summary");
         const data = await res.json();
 
-        // Ubah angka di card
-        document.querySelector('.stat-card:nth-child(1) h3').innerText = `Rp${data.total_sales.toLocaleString()}`;
-        document.querySelector('.stat-card:nth-child(2) h3').innerText = data.total_products;
-        document.querySelector('.stat-card:nth-child(3) h3').innerText = data.total_customers;
+        // Total Sales
+        document.querySelector(".card-sales h3").innerText = `Rp${data.total_sales.toLocaleString()}`;
 
-        // Low stock alert (ubah teks)
-        document.querySelector('.stat-card:nth-child(2) p.text-red-500').innerHTML =
+        // Stock Items
+        document.querySelector(".card-stock h3").innerText = data.total_products;
+        document.querySelector(".card-stock .low-stock").innerHTML = 
             `<i class="fas fa-arrow-down mr-1"></i> ${data.low_stock_items} items low stock`;
 
-        // Isi Recent Transactions
-        const tbody = document.querySelector("table tbody");
+        // Customers
+        document.querySelector(".card-customers h3").innerText = data.total_customers;
+
+        // Recent Transactions
+        const tbody = document.getElementById("recentTransactions");
         tbody.innerHTML = "";
         data.recent_transactions.forEach(tx => {
             const row = document.createElement("tr");
             row.innerHTML = `
                 <td class="px-6 py-4 text-sm font-medium text-gray-900">#${tx.id}</td>
-                <td class="px-6 py-4 text-sm text-gray-500">${tx.created_at.substring(0, 10)}</td>
+                <td class="px-6 py-4 text-sm text-gray-500">${tx.created_at.slice(0,10)}</td>
                 <td class="px-6 py-4 text-sm text-gray-500">${tx.customer_name || 'Anonim'}</td>
                 <td class="px-6 py-4 text-sm text-gray-500">Rp${tx.total_amount.toLocaleString()}</td>
                 <td class="px-6 py-4">
@@ -28,18 +36,15 @@ async function fetchSummary() {
             `;
             tbody.appendChild(row);
         });
-
     } catch (err) {
-        alert("Gagal mengambil data dashboard: " + err.message);
-    } if (data.low_stock_items > 0) {
-        alert(`⚠️ Ada ${data.low_stock_items} produk yang hampir habis stok!`);
-    }    
+        console.error("Dashboard summary error:", err);
+    }
 }
+
 async function loadSalesChart() {
     const today = new Date();
     const past30 = new Date();
     past30.setDate(today.getDate() - 30);
-
     const start = past30.toISOString().split('T')[0];
     const end = today.toISOString().split('T')[0];
 
@@ -62,13 +67,6 @@ async function loadSalesChart() {
         options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: {
-                tooltip: {
-                    callbacks: {
-                        label: ctx => 'Rp' + ctx.raw.toLocaleString()
-                    }
-                }
-            },
             scales: {
                 y: {
                     beginAtZero: true,
@@ -81,19 +79,27 @@ async function loadSalesChart() {
     });
 }
 
-const user = JSON.parse(localStorage.getItem('user'));
+// Proteksi per halaman
+const isAdmin = user.role === 'admin';
 
-if (!user) {
-    window.location.href = 'login.html';
-}
-
-// (Opsional) Batasi akses admin-only:
-if (window.location.pathname.includes('dashboard') && user.role !== 'admin') {
+if (location.pathname.includes("dashboard") && !isAdmin) {
     alert("Hanya admin yang boleh mengakses dashboard.");
-    window.location.href = 'pos.html';
+    location.href = "pos.html";
 }
 
-// Panggil saat load
+if (location.pathname.includes("reports") && !isAdmin) {
+    alert("Hanya admin yang boleh mengakses laporan.");
+    location.href = "pos.html";
+}
+
+// Ubah navbar secara dinamis
+document.addEventListener("DOMContentLoaded", () => {
+    if (!isAdmin) {
+        document.querySelector('a[href="dashboard.html"]')?.remove();
+        document.querySelector('a[href="reports.html"]')?.remove();
+    }
+});
+
 window.addEventListener('load', () => {
     fetchSummary();
     loadSalesChart();

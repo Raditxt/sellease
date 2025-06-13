@@ -1,4 +1,9 @@
+const user = JSON.parse(localStorage.getItem('user'));
+if (!user) window.location.href = 'login.html';
 document.getElementById('generateReport').addEventListener('click', generateReport);
+
+document.getElementById("userDisplay").innerText = `${user.username} (${user.role})`;
+
 
 async function generateReport() {
     const start = document.getElementById('startDate').value;
@@ -121,10 +126,6 @@ function updateSalesChart(data) {
     });
 }
 
-const user = JSON.parse(localStorage.getItem("user"));
-if (!user) location.href = "login.html";
-
-// Proteksi per halaman
 const isAdmin = user.role === 'admin';
 
 if (location.pathname.includes("dashboard") && !isAdmin) {
@@ -137,14 +138,34 @@ if (location.pathname.includes("reports") && !isAdmin) {
     location.href = "pos.html";
 }
 
-// Ubah navbar secara dinamis
 document.addEventListener("DOMContentLoaded", () => {
+    const nav = document.querySelector("nav ul");
+
+    // Sembunyikan menu admin jika kasir
     if (!isAdmin) {
         document.querySelector('a[href="dashboard.html"]')?.remove();
         document.querySelector('a[href="reports.html"]')?.remove();
+        document.querySelector('a[href="products.html"]')?.remove();
     }
-});
 
+    // Tambahkan Riwayat untuk semua user
+    const riwayatExist = document.querySelector('a[href="history.html"]');
+    if (!riwayatExist) {
+        nav.insertAdjacentHTML("beforeend", `
+            <li><a href="history.html" class="hover:text-blue-200 transition"><i class="fas fa-clock mr-1"></i> Riwayat</a></li>
+        `);
+    }
+
+    // Tambahkan menu User hanya untuk admin
+    if (isAdmin && !document.querySelector('a[href="users.html"]')) {
+        nav.insertAdjacentHTML("beforeend", `
+            <li><a href="users.html" class="hover:text-blue-200 transition"><i class="fas fa-user-cog mr-1"></i> User</a></li>
+        `);
+    }
+
+    // Tampilkan siapa yang login
+    document.getElementById("userDisplay").innerText = `Login sebagai: ${user.username} (${user.role})`;
+});
 // Load default saat buka halaman
 window.addEventListener('load', generateReport);
 

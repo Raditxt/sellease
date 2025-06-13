@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Riwayat Transaksi - SellEase</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body class="bg-gray-100">
+  <div class="min-h-screen flex flex-col">
+    <header class="bg-blue-600 text-white p-4 shadow-md">
+      <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-xl font-bold">SellEase - Riwayat Transaksi</h1>
+        <nav>
+          <ul class="flex space-x-6 text-sm">
+            <li><a href="dashboard.html" class="hover:text-blue-200">Dashboard</a></li>
+            <li><a href="pos.html" class="hover:text-blue-200">POS</a></li>
+            <li><a href="history.html" class="underline font-semibold">Riwayat</a></li>
+            <li><a href="login.html" class="hover:text-blue-200">Logout</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main class="container mx-auto p-6 flex-grow">
+      <h2 class="text-2xl font-bold text-gray-800 mb-6">Riwayat Transaksi</h2>
+      <div class="bg-white rounded-xl shadow p-6">
+        <table class="min-w-full text-sm divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th class="px-4 py-2 text-left font-semibold text-gray-600">Waktu</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-600">Customer</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-600">Total</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-600">Metode</th>
+              <th class="px-4 py-2 text-left font-semibold text-gray-600">Kasir</th>
+            </tr>
+          </thead>
+          <tbody id="historyTable" class="divide-y divide-gray-200">
+            <tr><td colspan="5" class="text-center py-4 text-gray-400">Memuat data...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white text-center py-4 text-sm">
+      &copy; 2025 SellEase POS System
+    </footer>
+  </div>
+  <script src="assets/js/history.js"></script>
+</body>
+</html>

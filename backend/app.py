@@ -7,6 +7,7 @@ from routes.dashboard import dashboard_bp
 from routes.reports import reports_bp
 from routes.logs import logs_bp
 from routes.customers import customers_bp
+from routes.users import users_bp
 
 app = Flask(__name__)
 CORS(app)
@@ -18,6 +19,7 @@ app.register_blueprint(dashboard_bp, url_prefix='/api')
 app.register_blueprint(reports_bp, url_prefix='/api')   
 app.register_blueprint(logs_bp, url_prefix='/api')
 app.register_blueprint(customers_bp, url_prefix='/api')
+app.register_blueprint(users_bp, url_prefix='/api')
 
 @app.route('/')
 def index():

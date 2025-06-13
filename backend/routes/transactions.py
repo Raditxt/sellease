@@ -59,3 +59,33 @@ def create_transaction():
     finally:
         cursor.close()
         conn.close()
+        
+@transactions_bp.route('/transactions', methods=['GET'])
+def get_transactions():
+    user_id = request.args.get('user_id')  # optional (kasir)
+
+    conn = get_db_connection()
+    cursor = conn.cursor(dictionary=True)
+    try:
+        query = """
+            SELECT t.id, t.created_at, t.total_amount, t.payment_method,
+                   c.name AS customer_name, u.username AS kasir
+            FROM transactions t
+            LEFT JOIN customers c ON t.customer_id = c.id
+            LEFT JOIN users u ON t.user_id = u.id
+        """
+        if user_id:
+            query += " WHERE t.user_id = %s ORDER BY t.created_at DESC"
+            cursor.execute(query, (user_id,))
+        else:
+            query += " ORDER BY t.created_at DESC"
+            cursor.execute(query)
+
+        results = cursor.fetchall()
+        return jsonify(results)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+    finally:
+        cursor.close()
+        conn.close()
+
